@@ -1,0 +1,170 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.6.0/schema.json",
+  "name": "6a2a03f183491cb1f9b0",
+  "position": {
+    "x": 150.83333333333334,
+    "y": 453.33333333333337,
+    "z": 3000,
+    "height": 265.83333333333337,
+    "width": 354.16666666666669,
+    "tabOrder": 3000
+  },
+  "visual": {
+    "visualType": "clusteredColumnChart",
+    "query": {
+      "queryState": {
+        "Category": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "claims_final"
+                    }
+                  },
+                  "Property": "Insurance Clean"
+                }
+              },
+              "queryRef": "claims_final.Insurance Clean",
+              "nativeQueryRef": "Insurance Clean",
+              "active": true
+            }
+          ]
+        },
+        "Y": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "claims_final"
+                    }
+                  },
+                  "Property": "Total Billed"
+                }
+              },
+              "queryRef": "claims_final.Total Billed",
+              "nativeQueryRef": "Total Billed"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "claims_final"
+                    }
+                  },
+                  "Property": "Total Paid"
+                }
+              },
+              "queryRef": "claims_final.Total Paid",
+              "nativeQueryRef": "Total Paid"
+            }
+          ]
+        }
+      },
+      "sortDefinition": {
+        "sort": [
+          {
+            "field": {
+              "Measure": {
+                "Expression": {
+                  "SourceRef": {
+                    "Entity": "claims_final"
+                  }
+                },
+                "Property": "Total Billed"
+              }
+            },
+            "direction": "Descending"
+          }
+        ],
+        "isDefaultSort": true
+      }
+    },
+    "visualContainerObjects": {
+      "background": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "title": [
+        {
+          "properties": {
+            "text": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Billed VS P'"
+                }
+              }
+            },
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "drillFilterOtherVisuals": true
+  },
+  "filterConfig": {
+    "filters": [
+      {
+        "name": "b40051791ee48c3fd852",
+        "field": {
+          "Measure": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "claims_final"
+              }
+            },
+            "Property": "Total Billed"
+          }
+        },
+        "type": "Advanced"
+      },
+      {
+        "name": "b88f6190622540636c6b",
+        "field": {
+          "Measure": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "claims_final"
+              }
+            },
+            "Property": "Total Paid"
+          }
+        },
+        "type": "Advanced"
+      },
+      {
+        "name": "b6d9595249c3998f9603",
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "claims_final"
+              }
+            },
+            "Property": "Insurance Clean"
+          }
+        },
+        "type": "Categorical"
+      }
+    ]
+  }
+}

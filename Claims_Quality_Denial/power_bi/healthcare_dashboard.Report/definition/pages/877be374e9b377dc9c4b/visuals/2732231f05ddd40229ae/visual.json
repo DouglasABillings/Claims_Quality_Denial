@@ -1,0 +1,230 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.6.0/schema.json",
+  "name": "2732231f05ddd40229ae",
+  "position": {
+    "x": 228.33333333333334,
+    "y": 497.5,
+    "z": 3000,
+    "height": 222.5,
+    "width": 437.5,
+    "tabOrder": 3000
+  },
+  "visual": {
+    "visualType": "tableEx",
+    "query": {
+      "queryState": {
+        "Values": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "claims_final"
+                    }
+                  },
+                  "Property": "Denial Rate"
+                }
+              },
+              "queryRef": "claims_final.Denial Rate",
+              "nativeQueryRef": "Denial Rate"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "claims_final"
+                    }
+                  },
+                  "Property": "Total Claims"
+                }
+              },
+              "queryRef": "claims_final.Total Claims",
+              "nativeQueryRef": "Total Claims"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "claims_final"
+                    }
+                  },
+                  "Property": "Procedure Code"
+                }
+              },
+              "queryRef": "claims_final.Procedure Code",
+              "nativeQueryRef": "Procedure Code"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "claims_final"
+                    }
+                  },
+                  "Property": "Top Denial Reason"
+                }
+              },
+              "queryRef": "claims_final.Top Denial Reason",
+              "nativeQueryRef": "Top Denial Reason"
+            }
+          ]
+        }
+      },
+      "sortDefinition": {
+        "sort": [
+          {
+            "field": {
+              "Measure": {
+                "Expression": {
+                  "SourceRef": {
+                    "Entity": "claims_final"
+                  }
+                },
+                "Property": "Denial Rate"
+              }
+            },
+            "direction": "Descending"
+          }
+        ]
+      }
+    },
+    "objects": {
+      "values": [
+        {
+          "properties": {
+            "fontSize": {
+              "expr": {
+                "Literal": {
+                  "Value": "8D"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "total": [
+        {
+          "properties": {
+            "totals": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "columnWidth": [
+        {
+          "properties": {
+            "value": {
+              "expr": {
+                "Literal": {
+                  "Value": "77.16666699270904D"
+                }
+              }
+            }
+          },
+          "selector": {
+            "metadata": "claims_final.Denial Rate"
+          }
+        },
+        {
+          "properties": {
+            "value": {
+              "expr": {
+                "Literal": {
+                  "Value": "105.16666634677578D"
+                }
+              }
+            }
+          },
+          "selector": {
+            "metadata": "claims_final.Procedure Code"
+          }
+        }
+      ]
+    },
+    "visualContainerObjects": {
+      "background": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "drillFilterOtherVisuals": true
+  },
+  "filterConfig": {
+    "filters": [
+      {
+        "name": "bb9259e06812d3c094f3",
+        "field": {
+          "Measure": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "claims_final"
+              }
+            },
+            "Property": "Denial Rate"
+          }
+        },
+        "type": "Advanced"
+      },
+      {
+        "name": "9cfcdc91a35e06004298",
+        "field": {
+          "Measure": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "claims_final"
+              }
+            },
+            "Property": "Total Claims"
+          }
+        },
+        "type": "Advanced"
+      },
+      {
+        "name": "2a1490e0f6712e293789",
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "claims_final"
+              }
+            },
+            "Property": "Procedure Code"
+          }
+        },
+        "type": "Categorical"
+      },
+      {
+        "name": "92eba51fa13cdb300b5e",
+        "field": {
+          "Measure": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "claims_final"
+              }
+            },
+            "Property": "Top Denial Reason"
+          }
+        },
+        "type": "Advanced"
+      }
+    ]
+  }
+}

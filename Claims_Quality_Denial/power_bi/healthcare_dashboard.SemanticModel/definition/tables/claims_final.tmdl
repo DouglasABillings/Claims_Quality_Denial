@@ -1,0 +1,398 @@
+table claims_final
+	lineageTag: de6929ba-a229-4c22-86bf-2f88b1899a80
+
+	/// Total number of claims in the dataset
+	measure 'Total Claims' = COUNTROWS(claims_final)
+		formatString: #,0
+		displayFolder: 📊 Core KPIs
+		lineageTag: c0ed16e3-c8d2-458e-96ac-39845fc3e60c
+
+	/// Sum of all billed amounts
+	measure 'Total Billed' = SUM(claims_final[Billed Amount])
+		formatString: $#,0
+		displayFolder: 📊 Core KPIs
+		lineageTag: 44a5c7ed-6d17-4929-ba6d-e9ed64584014
+
+	/// Sum of all allowed amounts
+	measure 'Total Allowed' = SUM(claims_final[Allowed Amount])
+		formatString: $#,0
+		displayFolder: 📊 Core KPIs
+		lineageTag: 17696243-99d2-4e9e-8b25-ae955e54975c
+
+	/// Sum of all paid amounts
+	measure 'Total Paid' = SUM(claims_final[Paid Amount])
+		formatString: $#,0
+		displayFolder: 📊 Core KPIs
+		lineageTag: 9e5c1c9b-a977-4daf-8d15-8fd8602d80bb
+
+	/// Average billed amount per claim
+	measure 'Avg Billed per Claim' = DIVIDE([Total Billed], [Total Claims])
+		formatString: $#,0.00
+		displayFolder: 📊 Core KPIs
+		lineageTag: 29891b4b-e067-4b41-86ab-8d8cd4b08bf9
+
+	/// Average allowed amount per claim
+	measure 'Avg Allowed per Claim' = DIVIDE([Total Allowed], [Total Claims])
+		formatString: $#,0.00
+		displayFolder: 📊 Core KPIs
+		lineageTag: bf7dd7ca-9b2b-43d9-861f-c9147be06639
+
+	/// Average paid amount per claim
+	measure 'Avg Paid per Claim' = DIVIDE([Total Paid], [Total Claims])
+		formatString: $#,0.00
+		displayFolder: 📊 Core KPIs
+		lineageTag: 4e9e0cf3-8168-4614-886a-e2ea64030dcc
+
+	/// Paid as a % of billed — overall reimbursement efficiency
+	measure 'Reimbursement Rate' = DIVIDE([Total Paid], [Total Billed])
+		formatString: 0.0%
+		displayFolder: 💰 Financial
+		lineageTag: 5e6fdd08-c4d5-4a0b-ac71-49d28b7c348e
+
+	/// Billed minus allowed — contractual write-off
+	measure 'Write-off Amount' = [Total Billed] - [Total Allowed]
+		formatString: $#,0
+		displayFolder: 💰 Financial
+		lineageTag: dcbb89ef-97bc-4f26-9c2f-af6cad58b908
+
+	/// Write-off as % of total billed
+	measure 'Write-off Rate' = DIVIDE([Write-off Amount], [Total Billed])
+		formatString: 0.0%
+		displayFolder: 💰 Financial
+		lineageTag: 5b6bff8f-9834-4a5a-9e78-cea35432c79a
+
+	/// Allowed minus paid — money left on the table
+	measure 'Underpayment Amount' = SUMX(claims_final, claims_final[Underpayment Amt])
+		formatString: $#,0
+		displayFolder: 💰 Financial
+		lineageTag: 337660de-aa77-4c3b-8d4a-0d9c7195a5f8
+
+	/// Underpayment as % of total allowed
+	measure 'Underpayment Rate' = DIVIDE([Underpayment Amount], [Total Allowed])
+		formatString: 0.0%
+		displayFolder: 💰 Financial
+		lineageTag: 72093370-9306-4da9-ae02-33835398c1c7
+
+	/// Allowed as % of billed — payer discount rate
+	measure 'Allowed Rate' = DIVIDE([Total Allowed], [Total Billed])
+		formatString: 0.0%
+		displayFolder: 💰 Financial
+		lineageTag: dd0bae69-9150-468a-b457-299fdf5eedef
+
+	/// Claims where Claim Status = Denied (using cleaned field)
+	measure 'Denied Claims' = CALCULATE([Total Claims], claims_final[Claim Status Clean] = "Denied")
+		formatString: #,0
+		displayFolder: 🚫 Denial Analysis
+		lineageTag: e7d1aec3-17f8-4726-9f23-1650ceb205b3
+
+	/// Denial rate as % of total claims
+	measure 'Denial Rate' = DIVIDE([Denied Claims], [Total Claims])
+		formatString: 0.0%
+		displayFolder: 🚫 Denial Analysis
+		lineageTag: 3bf98e39-89f7-40af-b8e0-b7339c840a95
+
+	/// Total billed amount on denied claims
+	measure 'Denied Billed Amount' = CALCULATE([Total Billed], claims_final[Claim Status Clean] = "Denied")
+		formatString: $#,0
+		displayFolder: 🚫 Denial Analysis
+		lineageTag: 80e9dc37-89eb-447c-a108-b891a0f56243
+
+	/// Claims currently under review
+	measure 'Under Review Claims' = CALCULATE([Total Claims], claims_final[Claim Status Clean] = "Under Review")
+		formatString: #,0
+		displayFolder: 🚫 Denial Analysis
+		lineageTag: 4b14608c-3dec-45ae-8128-bcf189aa8fed
+
+	/// Billed amount at risk on under-review claims
+	measure 'At-Risk Billed Amount' = CALCULATE([Total Billed], claims_final[Claim Status Clean] = "Under Review")
+		formatString: $#,0
+		displayFolder: 🚫 Denial Analysis
+		lineageTag: 74be2bbb-ab3b-481e-a498-84eec449fa7d
+
+	/// Claims fully paid per Claim Status
+	measure 'Paid Claims' = CALCULATE([Total Claims], claims_final[Claim Status Clean] = "Paid")
+		formatString: #,0
+		displayFolder: 🚫 Denial Analysis
+		lineageTag: 114ac751-39b2-4ee4-8f4c-248e967b5dd7
+
+	/// Top denial reason by denied claim count — uses ADDCOLUMNS to correctly iterate reason codes in filter context
+	measure 'Top Denial Reason' = VAR reasonCounts = ADDCOLUMNS(FILTER(VALUES(claims_final[Reason Code]), claims_final[Reason Code] <> ""), "cnt", CALCULATE(COUNTROWS(claims_final), claims_final[Claim Status Clean] = "Denied")) VAR topReason = TOPN(1, reasonCounts, [cnt], DESC) RETURN MAXX(topReason, claims_final[Reason Code])
+		displayFolder: 🚫 Denial Analysis
+		lineageTag: eba0e4d6-2522-44ab-a333-d3b4978b5a65
+
+	/// Count of claims flagged as requiring follow-up
+	measure 'Follow-up Count' = CALCULATE([Total Claims], TRIM(claims_final[Follow-up Required]) = "Yes")
+		formatString: #,0
+		displayFolder: 📋 AR & Follow-up
+		lineageTag: 93e1a511-925c-4b57-80fe-471284a0a1a1
+
+	/// Follow-up rate as % of all claims
+	measure 'Follow-up Rate' = DIVIDE([Follow-up Count], [Total Claims])
+		formatString: 0.0%
+		displayFolder: 📋 AR & Follow-up
+		lineageTag: 74b39216-5079-453d-be85-bb375956ff8d
+
+	/// Claims where Claim Status and Outcome are directly contradictory
+	measure 'Status-Outcome Conflicts' = CALCULATE([Total Claims], claims_final[Audit Flag] = "Status-Outcome Conflict")
+		formatString: #,0
+		displayFolder: 🔍 Audit Flags
+		lineageTag: 3e259941-0dde-4bed-8e9f-afc63b22d588
+
+	/// Conflict rate as % of total claims
+	measure 'Conflict Rate' = DIVIDE([Status-Outcome Conflicts], [Total Claims])
+		formatString: 0.0%
+		displayFolder: 🔍 Audit Flags
+		lineageTag: 22bd76bb-09b4-410a-8513-9af1ef74c3e5
+
+	/// Claims with Paid status but Partially Paid outcome — potential underpayment
+	measure 'Underpayment Flags' = CALCULATE([Total Claims], claims_final[Audit Flag] = "Underpayment Flag")
+		formatString: #,0
+		displayFolder: 🔍 Audit Flags
+		lineageTag: e486ad16-d7ca-4c76-924f-a37924dd3afa
+
+	/// Claims with a blank or unknown outcome value
+	measure 'Blank Outcome Claims' = CALCULATE([Total Claims], claims_final[Audit Flag] = "Blank Outcome")
+		formatString: #,0
+		displayFolder: 🔍 Audit Flags
+		lineageTag: 4684a86b-c701-4bd8-a1e6-77053bf3a557
+
+	/// Total billed on conflicted claims — financial exposure from coding errors
+	measure 'Conflict Billed Exposure' = CALCULATE([Total Billed], claims_final[Audit Flag] = "Status-Outcome Conflict")
+		formatString: $#,0
+		displayFolder: 🔍 Audit Flags
+		lineageTag: 27706a15-28de-40d5-bf1d-edae1aa3feca
+
+	/// Claims denied but with no reason code documented
+	measure 'Denied Without Reason Code' = CALCULATE([Total Claims], claims_final[Claim Status Clean] = "Denied", claims_final[Reason Code] = "")
+		formatString: #,0
+		displayFolder: 🔍 Audit Flags
+		lineageTag: 1ff55fe9-d8da-4a17-8d3f-a09de98085dc
+
+	/// % of denied claims missing a reason code
+	measure 'Missing Reason Code Rate' = DIVIDE([Denied Without Reason Code], [Denied Claims])
+		formatString: 0.0%
+		displayFolder: 🔍 Audit Flags
+		lineageTag: 8a9c0d3b-59ff-406f-83a3-560898214593
+
+	/// Total claims with any audit flag (conflicts + underpayments + blank outcomes)
+	measure 'Total Flagged Claims' = CALCULATE([Total Claims], claims_final[Audit Flag] <> "Consistent")
+		displayFolder: 🔍 Audit Flags
+		lineageTag: 9ec6642a-e3f6-480f-b04d-4a853fc22ac9
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	/// Overall audit flag rate across all claims
+	measure 'Overall Flag Rate' = DIVIDE([Total Flagged Claims], [Total Claims])
+		formatString: 0.00%;-0.00%;0.00%
+		displayFolder: 🔍 Audit Flags
+		lineageTag: a6b660c3-cce7-4639-b27d-ad666253d579
+
+	measure Minimum = 0
+		formatString: 0
+		lineageTag: 9e2f6b5b-1ca2-40aa-a75f-e31a9b894759
+
+	measure Maximum = 1000
+		formatString: 0
+		lineageTag: 1a06560d-40c0-4210-b048-7b50c11c045a
+
+	/// Count of claims with dirty insurance payer names corrected via normalization (Mediciad, Comercial, Mediocare)
+	measure 'Payer Name Corrections' = CALCULATE(COUNTROWS(claims_final), claims_final[Insurance Fixed] IN {"Mediciad", "Comercial", "Mediocare"})
+		formatString: #,0
+		displayFolder: 🔍 Audit Flags
+		lineageTag: fbc46d22-054f-4bfb-a80d-99dc468a84a2
+
+	column 'Claim ID'
+		dataType: string
+		lineageTag: a856a42a-4857-44e5-95e6-c76ce62fe8d2
+		summarizeBy: none
+		sourceColumn: Claim ID
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Provider Fixed'
+		dataType: string
+		lineageTag: c212ba32-aca9-46a7-b51b-77011a759f4d
+		summarizeBy: none
+		sourceColumn: Provider Fixed
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Patient Fixed'
+		dataType: string
+		lineageTag: 151e694f-dc70-486f-b6e9-6479acf867c6
+		summarizeBy: none
+		sourceColumn: Patient Fixed
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'DOS Fixed'
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: 93bc1089-043e-474c-8a85-b9c62a42d08f
+		summarizeBy: none
+		sourceColumn: DOS Fixed
+
+		variation Variation
+			isDefault
+			relationship: 0ce20af9-0faf-418e-8fe2-d5627689a074
+			defaultHierarchy: LocalDateTable_438417df-6f4d-4bba-a35c-f279a6a4be65.'Date Hierarchy'
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column 'Billed Amount'
+		dataType: decimal
+		formatString: \$#,0.###############;(\$#,0.###############);\$#,0.###############
+		lineageTag: f2ca6e57-78ea-44dc-939c-e98e6f2dd1c6
+		summarizeBy: sum
+		sourceColumn: Billed Amount
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"currencyCulture":"en-US"}
+
+	column 'Procedure Code'
+		dataType: string
+		lineageTag: 4d32f361-c57c-46b0-baff-eafb9c47bb1a
+		summarizeBy: none
+		sourceColumn: Procedure Code
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Diag Fixed'
+		dataType: string
+		lineageTag: 35378687-01b0-40ca-b61e-816c72d29c7d
+		summarizeBy: none
+		sourceColumn: Diag Fixed
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Allowed Amount'
+		dataType: decimal
+		formatString: \$#,0.###############;(\$#,0.###############);\$#,0.###############
+		lineageTag: f9e64d71-e8b5-4e99-b1f2-2d8a4db7a938
+		summarizeBy: sum
+		sourceColumn: Allowed Amount
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"currencyCulture":"en-US"}
+
+	column 'Paid Amount'
+		dataType: decimal
+		formatString: \$#,0.###############;(\$#,0.###############);\$#,0.###############
+		lineageTag: ceddf70a-6119-4dfc-adff-ba373751811f
+		summarizeBy: sum
+		sourceColumn: Paid Amount
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"currencyCulture":"en-US"}
+
+	column 'Insurance Fixed'
+		dataType: string
+		lineageTag: 8f9f30d0-08e4-4bcd-975a-207aa5393648
+		summarizeBy: none
+		sourceColumn: Insurance Fixed
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Claim Status'
+		dataType: string
+		lineageTag: 8bd42eea-0a28-4815-b5ec-3c1d03e37c91
+		summarizeBy: none
+		sourceColumn: Claim Status
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Reason Code'
+		dataType: string
+		lineageTag: d7081373-dba1-4f00-9ed3-a5fdc4f9c392
+		summarizeBy: none
+		sourceColumn: Reason Code
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Follow-up Required'
+		dataType: string
+		lineageTag: b76f7738-caf0-4009-9bdd-8e7608c52b18
+		summarizeBy: none
+		sourceColumn: Follow-up Required
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'AR Status'
+		dataType: string
+		lineageTag: 07d66580-815d-47f7-8609-a3676cff1ac2
+		summarizeBy: none
+		sourceColumn: AR Status
+
+		annotation SummarizationSetBy = Automatic
+
+	column Outcome
+		dataType: string
+		lineageTag: 60e4977c-24be-4527-9ade-e6476d447b99
+		summarizeBy: none
+		sourceColumn: Outcome
+
+		annotation SummarizationSetBy = Automatic
+
+	/// Normalized insurance payer — corrects Mediciad, Comercial, Mediocare typos
+	column 'Insurance Clean' = SWITCH(TRUE(), SEARCH("Medicaid", TRIM(claims_final[Insurance Fixed]),, 0) > 0, "Medicaid", SEARCH("Medicare", TRIM(claims_final[Insurance Fixed]),, 0) > 0, "Medicare", SEARCH("Commercial", TRIM(claims_final[Insurance Fixed]),, 0) > 0, "Commercial", SEARCH("Self Pay", TRIM(claims_final[Insurance Fixed]),, 0) > 0, "Self Pay", TRIM(claims_final[Insurance Fixed]))
+		dataType: string
+		displayFolder: Cleaned Fields
+		lineageTag: 6e5b85de-61c5-4a86-8b9f-b0377fc0069e
+
+	/// Removes extra whitespace from Claim Status
+	column 'Claim Status Clean' = TRIM(claims_final[Claim Status])
+		dataType: string
+		displayFolder: Cleaned Fields
+		lineageTag: 40b1589d-ee2d-49ae-b63e-9a75e5534d0b
+
+	/// Normalized outcome — trims whitespace, labels blanks as Unknown
+	column 'Outcome Clean' = IF(TRIM(claims_final[Outcome]) = "", "Unknown", TRIM(claims_final[Outcome]))
+		dataType: string
+		displayFolder: Cleaned Fields
+		lineageTag: 707159bb-95e5-4918-94d6-ee1ec12f336f
+
+	/// Normalizes AR Status — fixes Onhold variant and labels blanks
+	column 'AR Status Clean' = VAR raw = TRIM(claims_final[AR Status]) RETURN SWITCH(TRUE(), raw = "Onhold", "On Hold", raw = "", "Unknown", raw)
+		dataType: string
+		displayFolder: Cleaned Fields
+		lineageTag: 819ed5c1-9377-4da9-9d07-c2bd932c0818
+
+	/// Row-level underpayment — difference between allowed and paid amounts
+	column 'Underpayment Amt' = MAX(claims_final[Allowed Amount] - claims_final[Paid Amount], 0)
+		dataType: decimal
+		formatString: $#,0.00
+		displayFolder: Audit Flags
+		lineageTag: dc8db809-2862-4e7c-8fbf-9400d81f5edb
+
+	/// Audit classification per claim
+	column 'Audit Flag' = VAR s = TRIM(claims_final[Claim Status]) VAR o = IF(TRIM(claims_final[Outcome])="","Unknown",TRIM(claims_final[Outcome])) RETURN SWITCH(TRUE(), o="Unknown", "Blank Outcome", s="Paid", IF(o="Denied","Status-Outcome Conflict",IF(o="Partially Paid","Underpayment Flag","Consistent")), s="Denied", IF(o="Paid","Status-Outcome Conflict","Consistent"), "Consistent")
+		dataType: string
+		displayFolder: Audit Flags
+		lineageTag: 6c76c258-aaef-4c19-8870-d381f2ceb569
+
+	column 'Reason Code Clean' = IF(claims_final[Reason Code] = "", "Missing Reason", claims_final[Reason Code])
+		displayFolder: Cleaned Fields
+		lineageTag: 2eaf1b6f-dd74-48be-a6f2-504d6600cedc
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+	partition claims_final = m
+		mode: import
+		source =
+				let
+				  Source = Csv.Document(File.Contents("C:\Users\Doug\Desktop\Data Analytics\Medical_Coding_Accuracy_Audit\sql\claims_final.csv"), [Delimiter = ",", Columns = 15, QuoteStyle = QuoteStyle.None]),
+				  #"Promoted headers" = Table.PromoteHeaders(Source, [PromoteAllScalars = true]),
+				  #"Changed column type" = Table.TransformColumnTypes(#"Promoted headers",{{"Claim ID", type text}, {"Provider Fixed", type text}, {"Patient Fixed", type text}, {"DOS Fixed", type date}, {"Billed Amount", Currency.Type}, {"Procedure Code", type text}, {"Diag Fixed", type text}, {"Allowed Amount", Currency.Type}, {"Paid Amount", Currency.Type}, {"Insurance Fixed", type text}, {"Claim Status", type text}, {"Reason Code", type text}, {"Follow-up Required", type text}, {"AR Status", type text}, {"Outcome", type text}})
+				in
+				  #"Changed column type"
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Table
+

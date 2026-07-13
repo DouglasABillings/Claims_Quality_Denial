@@ -1,0 +1,5 @@
+relationship 0ce20af9-0faf-418e-8fe2-d5627689a074
+	joinOnDateBehavior: datePartOnly
+	fromColumn: claims_final.'DOS Fixed'
+	toColumn: LocalDateTable_438417df-6f4d-4bba-a35c-f279a6a4be65.Date
+

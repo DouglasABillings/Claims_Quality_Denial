@@ -1,0 +1,12 @@
+﻿Validation Check,Method,Result,Status
+Row Count Validation,Compared raw and cleaned datasets,"1,040 rows before and 1000 after cleaning, duplicates found",Pass
+Date Format Validation,Verified all DOS values use dd-mm-yyyy,All dates standardized,Pass
+Insurance Values,Reviewed unique values,"Only Commercial, Medicaid, Medicare, and Self Pay remain",Pass
+Follow Up Values,Reviewed unique values,Only Yes and No values present,Pass
+Claim Status Values,Reviewed unique values,All statuses standardized,Pass
+Outcome Values,Reviewed unique values,All outcomes standardized,Pass
+Numeric Fields,"Verified Billed, Allowed, and Paid are numeric",No formatting inconsistencies found,Pass
+Financial Logic,Verified Paid ≤ Allowed,No violations found,Pass
+Duplicate Claim IDs,Checked for duplicate Claim IDs,No duplicates detected,Pass
+,,,
+,,,
