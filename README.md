@@ -93,15 +93,15 @@ All data cleaning, validation, SQL analysis, dashboard design, business interpre
 
 ### Executive Overview
 
-[exec.bmp](https://github.com/user-attachments/files/29947719/exec.bmp)
+![exec.bmp](https://github.com/user-attachments/files/29947719/exec.bmp)
 
 ### Denial Analytics
 
-[denial.bmp](https://github.com/user-attachments/files/29947730/denial.bmp)
+![denial.bmp](https://github.com/user-attachments/files/29947730/denial.bmp)
 
 ### Claims Quality Audit
 
-[audit.bmp](https://github.com/user-attachments/files/29947736/audit.bmp)
+![audit.bmp](https://github.com/user-attachments/files/29947736/audit.bmp)
 
 ---
 
