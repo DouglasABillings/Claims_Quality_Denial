@@ -1,5 +1,14 @@
 # 🏥 Claims Quality & Denial Analytics Dashboard
 
+> 1,000 claims processed. 32.7% denial rate. One dashboard to surface what's failing, why it's failing, and where to focus remediation first.
+
+![Power BI](https://img.shields.io/badge/Power%20BI-Dashboard-F2C811?style=flat&logo=powerbi&logoColor=black)
+![DAX](https://img.shields.io/badge/DAX-32%20Measures-0078D4?style=flat&logo=microsoftpowerbi&logoColor=white)
+![Domain](https://img.shields.io/badge/Domain-Healthcare%20Claims-red?style=flat)
+![Status](https://img.shields.io/badge/Status-Complete-brightgreen?style=flat)
+
+---
+
 ## 📖 Project Overview
 
 Healthcare organizations process thousands of insurance claims, making it difficult to quickly identify denial trends, reimbursement performance, and data quality issues that delay payment.
